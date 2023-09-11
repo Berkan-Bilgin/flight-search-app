@@ -1,12 +1,13 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
-
+import Header from "@/components/Header/Header"
+import SearchForm from "@/components/SearchForm/SearchForm"
 export default function Home() {
   return (
     <>
-    <h1>hello</h1>
+    <Header></Header>
+    <div className="pt-12"> {/* pt-16 ile Header yüksekliği kadar boşluk bırakılır */}
+      <SearchForm></SearchForm>
+       
+      </div>
     </>
     
   )
