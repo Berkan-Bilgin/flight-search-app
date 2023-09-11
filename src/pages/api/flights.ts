@@ -229,5 +229,21 @@ const flights: Flight[] = [
 ];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json(flights);
+  if (req.method === 'GET') {
+    // GET isteği için işlemler
+    res.status(200).json(flights);
+  } else if (req.method === 'POST') {
+    // POST isteği için işlemler
+    const newFlight: Flight = req.body;
+    
+    if (!newFlight.id || !newFlight.departureAirport || !newFlight.arrivalAirport || !newFlight.departureDate || !newFlight.returnDate || !newFlight.price) {
+      return res.status(400).json({ message: 'Eksik bilgi' });
+    }
+
+    flights.push(newFlight);
+    res.status(201).json(newFlight);
+  } else {
+    // Diğer HTTP metodları için 405 Method Not Allowed hatası döndür
+    res.status(405).end();
+  }
 }
