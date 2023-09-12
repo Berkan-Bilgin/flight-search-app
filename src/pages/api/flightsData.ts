@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { airportOptions } from "@/common/airports";
 
 type Flight = {
   id: number;
@@ -9,18 +10,17 @@ type Flight = {
 };
 
 const generateFlights = (numFlights: number): Flight[] => {
-  const airports = ["JFK", "LAX", "ORD", "SFO", "ATL", "MIA", "DFW", "SEA", "BOS", "MCO", "LAS"];
   const flights: Flight[] = [];
 
   let idCounter = 1; // Counter for unique flight IDs
 
   for (let i = 1; i <= numFlights; i++) {
-    const departureAirport = airports[Math.floor(Math.random() * airports.length)];
-    let arrivalAirport = airports[Math.floor(Math.random() * airports.length)];
+    const departureAirportOption = airportOptions[Math.floor(Math.random() * airportOptions.length)];
+    let arrivalAirportOption = airportOptions[Math.floor(Math.random() * airportOptions.length)];
 
     // Ensure the arrival airport is different from the departure airport
-    while (arrivalAirport === departureAirport) {
-      arrivalAirport = airports[Math.floor(Math.random() * airports.length)];
+    while (arrivalAirportOption.value === departureAirportOption.value) {
+      arrivalAirportOption = airportOptions[Math.floor(Math.random() * airportOptions.length)];
     }
 
     const month = Math.floor(Math.random() * 4) + 9; // Random month between September (9) and December (12)
@@ -30,8 +30,8 @@ const generateFlights = (numFlights: number): Flight[] => {
     // Create departure flight
     flights.push({
       id: idCounter++,
-      departureAirport,
-      arrivalAirport,
+      departureAirport: departureAirportOption.label,
+      arrivalAirport: arrivalAirportOption.label,
       departureDate,
       price,
     });
@@ -39,8 +39,8 @@ const generateFlights = (numFlights: number): Flight[] => {
     // Create return flight
     flights.push({
       id: idCounter++,
-      departureAirport: arrivalAirport,
-      arrivalAirport: departureAirport,
+      departureAirport: arrivalAirportOption.label,
+      arrivalAirport: departureAirportOption.label,
       departureDate,
       price,
     });
