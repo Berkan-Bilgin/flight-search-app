@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import Select from 'react-select';
+import axios from 'axios';
+import { useFlightOptions } from '@/hooks/useFlightOptions';
+
 
 const SearchSchema = Yup.object().shape({
   departureAirport: Yup.string().required('Required'),
@@ -12,7 +16,42 @@ const SearchSchema = Yup.object().shape({
   oneWay: Yup.boolean(),
 });
 
+const CustomSelect = ({ options, field, form, onChange }) => {
+  return (
+    <Select
+      id="long-value-select"
+      instanceId="long-value-select"
+      options={options}
+      name={field.name}
+      value={options ? options.find(option => option.value === field.value) : ''}
+      onChange={(option) => {
+        form.setFieldValue(field.name, option ? option.value : '');
+        if (onChange) {
+          onChange(option);
+        }
+      }}
+    />
+  );
+};
+
 const SearchForm = () => {
+  const [airportOptions, setAirportOptions] = useState([]);
+  const {  setDepartureAirport, arrivalOptions } = useFlightOptions();
+
+  useEffect(() => {
+    const fetchAirports = async () => {
+      try {
+        const response = await axios.get('/api/airportsOptions');
+        setAirportOptions(response.data);
+      } catch (error) {
+        console.error('Hata:', error);
+      }
+    };
+
+    fetchAirports();
+  }, []);
+
+
   return (
     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4">Search Flights</h2>
@@ -29,18 +68,30 @@ const SearchForm = () => {
           console.log(values);
         }}
       >
-        {({ values }) => (
+        {({ values, setFieldValue }) => (
           <Form>
-            <div className="mb-4">
-              <label htmlFor="departureAirport" className="block text-sm font-medium text-gray-600">Departure Airport</label>
-              <Field name="departureAirport" type="text" className="mt-1 p-2 w-full border rounded-md" />
-              <ErrorMessage name="departureAirport" component="div" className="text-red-500 text-sm" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="arrivalAirport" className="block text-sm font-medium text-gray-600">Arrival Airport</label>
-              <Field name="arrivalAirport" type="text" className="mt-1 p-2 w-full border rounded-md" />
-              <ErrorMessage name="arrivalAirport" component="div" className="text-red-500 text-sm" />
-            </div>
+           <div className="mb-4">
+            <label htmlFor="departureAirport" className="block text-sm font-medium text-gray-600">Departure Airport</label>
+            <Field
+              name="departureAirport"
+              component={CustomSelect}
+              options={airportOptions}
+              onChange={option => {
+                setFieldValue('departureAirport', option ? option.value : '');
+                setDepartureAirport(option ? option.value : null);
+              }}
+              />
+            <ErrorMessage name="departureAirport" component="div" className="text-red-500 text-sm" />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="arrivalAirport" className="block text-sm font-medium text-gray-600">Arrival Airport</label>
+            <Field
+              name="arrivalAirport"
+              component={CustomSelect}
+              options={arrivalOptions} // arrivalOptions'u kullanın
+            />
+            <ErrorMessage name="arrivalAirport" component="div" className="text-red-500 text-sm" />
+          </div>
             <div className="mb-4">
               <label htmlFor="departureDate" className="block text-sm font-medium text-gray-600">Departure Date</label>
               <Field name="departureDate" type="date" className="mt-1 p-2 w-full border rounded-md" />
