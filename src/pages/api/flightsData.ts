@@ -57,7 +57,11 @@ const generateFlights = (numFlights: number): Flight[] => {
   return flights;
 };
 
+let flights:any;
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const flights = generateFlights(500);
+    if (!flights) {
+        flights = generateFlights(500);
+      }
   res.status(200).json(flights);
 }
