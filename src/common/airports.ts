@@ -1,13 +1,14 @@
 export const airportOptions = [
-    { value: 'JFK', label: 'JFK - John F. Kennedy International Airport' },
-    { value: 'LAX', label: 'LAX - Los Angeles International Airport' },
-    { value: 'ORD', label: 'ORD - O\'Hare International Airport' },
-    { value: 'SFO', label: 'SFO - San Francisco International Airport' },
-    { value: 'ATL', label: 'ATL - Hartsfield-Jackson Atlanta International Airport' },
-    { value: 'MIA', label: 'MIA - Miami International Airport' },
-    { value: 'DFW', label: 'DFW - Dallas/Fort Worth International Airport' },
-    { value: 'SEA', label: 'SEA - Seattle-Tacoma International Airport' },
-    { value: 'BOS', label: 'BOS - Logan International Airport' },
-    { value: 'MCO', label: 'MCO - Orlando International Airport' },
-    { value: 'LAS', label: 'LAS - McCarran International Airport' }
+    { value: 'IST', label: 'IST - Istanbul Airport', city: 'Istanbul' },
+    { value: 'SAW', label: 'SAW - Sabiha Gökçen International Airport', city: 'Istanbul' },
+    { value: 'ADB', label: 'ADB - Adnan Menderes Airport', city: 'Izmir' },
+    { value: 'ESB', label: 'ESB - Esenboğa Airport', city: 'Ankara' },
+    { value: 'AYT', label: 'AYT - Antalya Airport', city: 'Antalya' },
+    { value: 'DLM', label: 'DLM - Dalaman Airport', city: 'Muğla' },
+    { value: 'BJV', label: 'BJV - Milas-Bodrum Airport', city: 'Muğla' },
+    { value: 'TZX', label: 'TZX - Trabzon Airport', city: 'Trabzon' },
+    { value: 'GZT', label: 'GZT - Oğuzeli Airport', city: 'Gaziantep' },
+    { value: 'ADA', label: 'ADA - Adana Şakirpaşa Airport', city: 'Adana' }
   ];
+
+
