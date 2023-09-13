@@ -12,12 +12,11 @@ const SearchSchema = Yup.object().shape({
   departureDate: Yup.date().required('Required'),
   oneWay: Yup.boolean(),
   returnDate: Yup.date().when('oneWay', {
-    is: false, // oneWay false olduğunda
-    then: Yup.date().required('Required'), // returnDate required olacak
-    otherwise: Yup.date().nullable() // oneWay true olduğunda, returnDate isteğe bağlı olacak
+    is: (oneWay: boolean) => oneWay === false,
+    then: () => Yup.date().required('Required'),
+    otherwise: () => Yup.date().nullable()
   }),
 });
-
 const CustomSelect = ({ options, field, form, onChange }) => {
   return (
     <Select
@@ -73,6 +72,7 @@ const SearchForm = () => {
         }}
       >
         {({ values, setFieldValue }) => (
+          console.log("values",values),
           <Form>
             {/* From */}
            <div className="mb-4">
