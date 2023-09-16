@@ -2,25 +2,31 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import  FlightCard  from '../FlightCard/FlightCard';
 
-const FlightTable = () => {
+const FlightTable = ({ searchData }) => {
   const [flights, setFlights] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState(null);
   const [openRowIndex, setOpenRowIndex] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      axios.get('http://localhost:3000/api/flightsData')
-        .then((response) => {
-          setFlights(response.data.slice(0, 10));
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          setLoading(false);
-        });
-    }, 3000);
-  }, []);
+    if (searchData) {
+      setLoading(true);
+      console.log(searchData.departureAirport);
+      
+      setTimeout(() => {
+        // API'ya filtreleme parametreleri ile yeni bir istek yap
+        axios.get(`http://localhost:3000/api/flightsData?departureAirport=${searchData.departureAirport}&arrivalAirport=${searchData.arrivalAirport}`)
+          .then((response) => {
+            setFlights(response.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            setLoading(false);
+          });
+      }, 1000);
+    }
+  }, [searchData]);
 
   const sortedFlights = [...flights].sort((a, b) => {
     if (sortKey === null) return 0;
