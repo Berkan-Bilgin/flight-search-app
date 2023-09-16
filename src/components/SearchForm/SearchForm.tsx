@@ -29,7 +29,7 @@ const SearchForm = ({ onSubmit }) => {
   const { setDepartureAirport, arrivalOptions } = useFlightOptions();
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md ">
+    <div className="max-w-sm mx-auto bg-white p-8 rounded-2xl shadow-md">
       <h2 className="text-2xl font-semibold mb-4 ">Search Flights</h2>
       <Formik
         initialValues={{
@@ -58,6 +58,7 @@ const SearchForm = ({ onSubmit }) => {
                   name="departureAirport"
                   component={CustomSelect}
                   options={airportOptions}
+                  placeholder="From"
                   onChange={(option) => {
                     setFieldValue('departureAirport', option ? option.value : '');
                     setDepartureAirport(option ? option.value : null);
@@ -73,6 +74,7 @@ const SearchForm = ({ onSubmit }) => {
                 <Field
                   name="arrivalAirport"
                   component={CustomSelect}
+                  placeholder="To"
                   options={arrivalOptions} // arrivalOptions'u kullanın
                 />
                 <ErrorMessage name="arrivalAirport" component="div" className="text-red-500 text-sm" />
