@@ -59,9 +59,27 @@ const generateFlights = (numFlights: number): Flight[] => {
 
 let flights:any;
 
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (!flights) {
-        flights = generateFlights(500);
-      }
-  res.status(200).json(flights);
+  if (!flights) {
+    flights = generateFlights(500);
+  }
+
+  const { departureAirport, arrivalAirport } = req.query;
+
+  // Filtreleme parametreleri varsa, uçuşları filtrele
+  let filteredFlights = flights;
+  
+  if (departureAirport) {
+    filteredFlights = filteredFlights.filter((flight: Flight) => {
+      return flight.departureAirport.startsWith(departureAirport);
+    });
+  }
+  if (arrivalAirport) {
+    filteredFlights = filteredFlights.filter((flight: Flight) => {
+      return flight.arrivalAirport.startsWith(arrivalAirport);
+    });
+  }
+
+  res.status(200).json(filteredFlights);
 }
