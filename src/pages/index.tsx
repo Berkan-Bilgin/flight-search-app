@@ -17,7 +17,7 @@ export default function Home() {
         {" "}
         {/* pt-16 ile Header yüksekliği kadar boşluk bırakılır */}
         <SearchForm onSubmit={handleSearchSubmit}></SearchForm>
-        {/* <FlightTable searchData={searchData}></FlightTable> */}
+        <FlightTable searchData={searchData}></FlightTable>
       </div>
     </>
   );

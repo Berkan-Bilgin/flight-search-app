@@ -38,6 +38,7 @@ const customStyles = {
 
 
 const CustomSelect = ({ options, field, form, onChange, placeholder }) => {
+  console.log("CustomSelect render:", field.name, field.value);
   const DropdownIndicator = (props) => {
     return (
       <components.DropdownIndicator {...props}>
@@ -52,13 +53,11 @@ const CustomSelect = ({ options, field, form, onChange, placeholder }) => {
       instanceId="long-value-select"
       options={options}
       name={field.name}
-      value={options ? options.find(option => option.value === field.value) : ''}
+      value={options.find(option => option.value === field.value) || null}
       onChange={(option) => {
-        if (form && field) {
-          form.setFieldValue(field.name, option ? option.value : '');
-          if (onChange) {
-            onChange(option);
-          }
+        form.setFieldValue(field.name, option ? option.value : '');
+        if (onChange) {
+          onChange(option);
         }
       }}
       components={{ DropdownIndicator: null }} // This line removes the default dropdown indicator

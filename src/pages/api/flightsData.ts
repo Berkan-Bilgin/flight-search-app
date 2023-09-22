@@ -6,6 +6,8 @@ type Flight = {
   id: number;
   departureAirport: string;
   arrivalAirport: string;
+  depertureAirportCode: string; // Yeni alan
+  arrivalAirportCode: string; // Yeni alan
   departureDate: string;
   departureTime: string;
   arrivalTime: string;
@@ -45,6 +47,8 @@ const generateFlights = (numFlights: number): Flight[] => {
       id: idCounter++,
       departureAirport: departureAirportOption.label,
       arrivalAirport: arrivalAirportOption.label,
+      departureAirportCode: departureAirportOption.airportCode,  // Yeni alan
+      arrivalAirportCode: arrivalAirportOption.airportCode,  // Yeni alan
       departureDate,
       departureTime,
       arrivalTime,

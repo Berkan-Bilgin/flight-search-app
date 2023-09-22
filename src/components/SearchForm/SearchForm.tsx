@@ -1,9 +1,10 @@
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import CustomSelect from '../CustomSelect/CustomSelect';
-import { useFlightOptions } from '@/hooks/useFlightOptions';
 import TripModeSwitch from '../TripModeSwitch/TripModeSwitch';
 import useFetchAirports from '@/hooks/useFetchAirports';
+import { useEffect, useState } from 'react';
+import { useFetchFlightsData } from '@/hooks/useFetchFlightsData';
 
 const SearchSchema = Yup.object().shape({
   departureAirport: Yup.string().required('Required'),
@@ -26,7 +27,40 @@ const SearchForm = ({ onSubmit }) => {
   };
 
   const { airportOptions, error } = useFetchAirports();
-  const { setDepartureAirport, arrivalOptions } = useFlightOptions();
+
+  const { flights } = useFetchFlightsData();
+
+  const [selectedDeparture, setSelectedDeparture] = useState(null);
+  const [selectedArrival, setSelectedArrival] = useState(null);
+  const [arrivalOptions, setArrivalOptions] = useState([]);
+
+  useEffect(() => {
+    if (selectedDeparture) {
+      const filteredFlights = flights.filter((flight) => flight.departureAirportCode === selectedDeparture);
+
+      const uniqueArrivalAirports = Array.from(new Set(filteredFlights.map((flight) => flight.arrivalAirportCode)));
+
+      const newArrivalOptions = uniqueArrivalAirports.map((code) => {
+        const flight = filteredFlights.find((flight) => flight.arrivalAirportCode === code);
+        return {
+          value: flight.arrivalAirportCode,
+          label: flight.arrivalAirport,
+        };
+      });
+
+      setArrivalOptions(newArrivalOptions);
+      console.log(
+        'selected-->',
+        selectedDeparture,
+        'arrival-->',
+        filteredFlights,
+        'airportOptions-->',
+        airportOptions,
+        'arrivalOptions-->',
+        arrivalOptions,
+      );
+    }
+  }, [selectedDeparture, flights]);
 
   return (
     <div className="max-w-sm mx-auto bg-white p-8 rounded-2xl shadow-md">
@@ -48,9 +82,9 @@ const SearchForm = ({ onSubmit }) => {
             <div className="mb-4">
               <TripModeSwitch setFieldValue={setFieldValue} />
             </div>
-            <div className="mb-4 flex justify-between ">
+            <div className="flex justify-between items-center">
               {/* From */}
-              <div className="w-1/2">
+              <div style={{ width: '45%' }}>
                 <label htmlFor="departureAirport" className="block text-sm font-medium text-gray-600">
                   From
                 </label>
@@ -61,23 +95,48 @@ const SearchForm = ({ onSubmit }) => {
                   placeholder="From"
                   onChange={(option) => {
                     setFieldValue('departureAirport', option ? option.value : '');
-                    setDepartureAirport(option ? option.value : null);
+                    setFieldValue('arrivalAirport', '');
+                    setSelectedDeparture(option ? option.value : null);
                   }}
                 />
-                <ErrorMessage name="departureAirport" component="div" className="text-red-500 text-sm" />
+                <div className="h-5">
+                  {' '}
+                  {/* Bu div sabit bir yükseklikte tutuldu. */}
+                  <ErrorMessage name="departureAirport" component="div" className="text-red-500 text-sm" />
+                </div>
               </div>
+
+              {/* Exchange Button */}
+              <div style={{ width: '8%' }} className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const tempDepartureValue = values.departureAirport; // Örneğin: 'JFK'
+                    const tempArrivalValue = values.arrivalAirport;     // Örneğin: 'LAX'
+                    
+                    const tempDepartureLabel = airportOptions.find(opt => opt.value === tempDepartureValue)?.label;
+                    const tempArrivalLabel = airportOptions.find(opt => opt.value === tempArrivalValue)?.label;
+                  }}
+                >
+                  <img className="" src="images/exchange.png" alt="" />
+                </button>
+              </div>
+
+              <button className='bg-red-600'>
+                deneme tahtası
+              </button>
+
               {/* To */}
-              <div className="w-1/2">
+              <div style={{ width: '45%' }}>
                 <label htmlFor="arrivalAirport" className="block text-sm font-medium text-gray-600">
                   To
                 </label>
-                <Field
-                  name="arrivalAirport"
-                  component={CustomSelect}
-                  placeholder="To"
-                  options={arrivalOptions} // arrivalOptions'u kullanın
-                />
-                <ErrorMessage name="arrivalAirport" component="div" className="text-red-500 text-sm" />
+                <Field name="arrivalAirport" component={CustomSelect} placeholder="To" options={arrivalOptions} />
+                <div className="h-5">
+                  {' '}
+                  {/* Bu div de sabit bir yükseklikte tutuldu. */}
+                  <ErrorMessage name="arrivalAirport" component="div" className="text-red-500 text-sm" />
+                </div>
               </div>
             </div>
 
